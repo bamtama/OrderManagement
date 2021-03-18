@@ -4,11 +4,10 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
   routes: [
     { path: '*', component: () => (import('@/components/404')) },
     {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: () => (import('@/components/login'))
     },
@@ -33,7 +32,7 @@ export default new Router({
             title: '报表管理',
             icon: 'el-icon-pie-chart'
           },
-          component: {render: (e) => e('router-view')}, // 空组件时设置
+          component: {render: (e) => e('router-view')}, 
           children: [
             {
               path: '/reports/dealer',
@@ -52,7 +51,7 @@ export default new Router({
             title: '商品管理',
             icon: 'el-icon-monitor'
           },
-          component: {render: (e) => e('router-view')}, // 空组件时设置
+          component: {render: (e) => e('router-view')}, 
           children: [
             {
               path: '/management/good',
@@ -71,7 +70,7 @@ export default new Router({
             title: '系统管理',
             icon: 'el-icon-s-grid'
           },
-          component: {render: (e) => e('router-view')}, // 空组件时设置
+          component: {render: (e) => e('router-view')}, 
           children: [
             {
               path: '/system/department',
@@ -118,7 +117,7 @@ export default new Router({
             title: '数据分析',
             icon: 'el-icon-s-data'
           },
-          component: {render: (e) => e('router-view')}, // 空组件时设置
+          component: {render: (e) => e('router-view')}, 
           children: [
             {
               path: '/analysis/sales',

@@ -70,7 +70,9 @@
           </el-dropdown>
         </el-header>
         <el-main>
-          <router-view></router-view>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
           <el-footer class="main-footer">
             <div class="">Copyright © 2020 All rights reserved.</div>
             <div class="right">Version 4.0.0</div>
@@ -96,7 +98,8 @@ export default {
       editableTabsValue: '', // 标签选中
       editableTabs: [],
       menuIndex: '', // 导航选中
-      default_openeds_array: []
+      default_openeds_array: [],
+      mroutes: {}
     }
   },
   created () {
@@ -121,7 +124,8 @@ export default {
   },
   methods: {
     onLogout () {
-      this.$router.push('/')
+      window.localStorage.clear()
+      this.$router.push('/login')
     },
     addTab (item) {
       let has = -1
@@ -168,7 +172,6 @@ export default {
       this.saveTab()
     },
     clickTab (target) {
-      console.log('clickTab', target)
       let tabs = this.editableTabs
       tabs.forEach((tab) => {
         if (tab.name === target.name) {
@@ -177,7 +180,7 @@ export default {
       })
     },
     gotoPage (item) {
-      if (item.name !== this.$route.name) {
+      if (item.name !== this.$route.name || this.editableTabs.length <= 0) {
         this.menuIndex = item.name
         this.$router.push(item.path)
         this.addTab(item)
@@ -193,13 +196,16 @@ export default {
       localStorage.setItem('tabs_save_' + this.C.user.user_id, JSON.stringify(this.editableTabs))
     },
     loadTab () {
+      let allroutes = this.$router.options.routes[2]
+      this._routeToMap(allroutes, this.mroutes)
+      
       let list = localStorage.getItem('tabs_save_' + this.C.user.user_id)
       if (list) {
         this.editableTabs = JSON.parse(list)
-        this.setSelectByRoute()
       } else {
-        this.gotoPage({name: 'dashboard_menu'})
+        this.addTab(this.mroutes[this.C.user.default_page])
       }
+      this.setSelectByRoute()
     },
     setSelectByRoute () {
       this.menuIndex = this.$route.name
@@ -209,6 +215,15 @@ export default {
     resizeMenu () {
       if (document.body.clientWidth < 1200) this.isCollapse = true
       else this.isCollapse = false
+    },
+    _routeToMap (item, target) {
+      if (item.children) {
+        item.children.forEach(si => {
+          this._routeToMap(si, target)
+        })
+      } else {
+        target[item.name] = item
+      }
     }
   }
 }
